@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EDK DIGITAL STUDIO</title>
+
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body { font-family: Arial, sans-serif; background: #080b12; color: white; }
+
+header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 22px 7%; border-bottom: 1px solid #202735;
+}
+.logo { font-size: 21px; font-weight: 900; letter-spacing: 1px; }
+.logo span { color: #36a3ff; }
+
+.menu { position: relative; }
+.menu-btn { font-size: 30px; background: none; color: white; border: none; cursor: pointer; }
+.dropdown {
+  display: none; position: absolute; right: 0; top: 42px; width: 210px;
+  background: #151d2b; border: 1px solid #303d50; border-radius: 12px;
+  overflow: hidden; z-index: 10;
+}
+.dropdown a { display: block; padding: 15px; text-decoration: none; color: white; font-size: 14px; }
+.dropdown a:hover { background: #26364c; }
+.show { display: block; }
+
+.hero {
+  text-align: center; padding: 105px 20px 90px;
+  background: radial-gradient(ellipse at top, #12345b 0%, #080b12 65%);
+}
+.tag {
+  color: #49adff; border: 1px solid #23639b; padding: 8px 15px;
+  border-radius: 30px; font-size: 12px; display: inline-block; margin-bottom: 25px;
+}
+.hero h1 { font-size: clamp(35px, 7vw, 65px); font-weight: 900; margin-bottom: 20px; }
+.hero h1 span { color: #36a3ff; }
+.hero p { color: #aab6c7; max-width: 600px; margin: auto; line-height: 1.8; }
+
+.buttons { margin-top: 30px; display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; }
+.btn { padding: 14px 23px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 14px; display: inline-block; }
+.primary { background: #1689e8; color: white; }
+.secondary { border: 1px solid #536174; color: white; }
+
+section { padding: 70px 7%; }
+.section-title { text-align: center; margin-bottom: 40px; }
+.section-title h2 { font-size: 30px; margin-bottom: 12px; }
+.section-title p { color: #9ba8b9; line-height: 1.6; }
+
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 22px; }
+.card {
+  background: #111925; border: 1px solid #253448; border-radius: 14px;
+  padding: 28px; transition: .3s;
+}
+.card:hover { transform: translateY(-5px); border-color: #1689e8; }
+.card .symbol { font-size: 30px; margin-bottom: 20px; }
+.card h3 { margin-bottom: 13px; font-size: 19px; }
+.card p { color: #aab6c7; font-size: 14px; line-height: 1.8; }
+.card a { display: inline-block; margin-top: 20px; color: #49adff; text-decoration: none; font-weight: bold; cursor: pointer; }
+
+.price {
+  display: inline-block; margin-top: 16px; background: #12345b; color: #7cc4ff;
+  border: 1px solid #23639b; padding: 5px 12px; border-radius: 20px;
+  font-size: 13px; font-weight: bold;
+}
+
+.about { background: #0d131e; text-align: center; }
+.about p { max-width: 700px; margin: auto; color: #aab6c7; line-height: 1.9; }
+.contact { text-align: center; }
+
+footer {
+  padding: 25px; text-align: center; background: #05080e;
+  border-top: 1px solid #202735; color: #8290a3; font-size: 13px;
+}
+
+/* ---------- FORMULAIRE D'INSCRIPTION ---------- */
+.modal {
+  display: none; position: fixed; inset: 0; z-index: 100;
+  background: rgba(0, 0, 0, .75); padding: 20px; overflow-y: auto;
+  align-items: center; justify-content: center;
+}
+.modal.open { display: flex; }
+.modal-box {
+  background: #111925; border: 1px solid #253448; border-radius: 16px;
+  width: 100%; max-width: 440px; padding: 30px 26px; position: relative; margin: auto;
+}
+.modal-close {
+  position: absolute; top: 12px; right: 16px; background: none; border: none;
+  color: #aab6c7; font-size: 28px; cursor: pointer;
+}
+.modal-box h3 { font-size: 22px; margin-bottom: 6px; }
+.modal-box .sub { color: #9ba8b9; font-size: 14px; margin-bottom: 20px; line-height: 1.5; }
+.field { margin-bottom: 15px; }
+.field label { display: block; font-size: 13px; color: #aab6c7; margin-bottom: 6px; }
+.field input, .field select, .field textarea {
+  width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #303d50;
+  background: #080b12; color: white; font-size: 15px; font-family: inherit;
+}
+.field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: #1689e8; }
+.field textarea { resize: vertical; min-height: 70px; }
+.total {
+  background: #0d131e; border: 1px solid #23639b; border-radius: 8px;
+  padding: 12px 14px; margin-bottom: 18px; display: flex;
+  justify-content: space-between; font-weight: bold; color: #7cc4ff;
+}
+.submit {
+  width: 100%; padding: 14px; border: none; border-radius: 8px; cursor: pointer;
+  background: #1fa855; color: white; font-weight: bold; font-size: 15px;
+}
+.submit:hover { background: #178a45; }
+.note { text-align: center; color: #8290a3; font-size: 12px; margin-top: 12px; }
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">EDK <span>DIGITAL STUDIO</span></div>
+
+  <div class="menu">
+    <button class="menu-btn" onclick="toggleMenu()">⋮</button>
+
+    <div class="dropdown" id="dropdown">
+      <a href="#services">Nos services</a>
+      <a href="#formations">Formations</a>
+      <a href="https://wa.me/243838379752">Me contacter</a>
+      <a href="https://whatsapp.com/channel/TON_LIEN">Rejoindre ma chaîne</a>
+    </div>
+  </div>
+</header>
+
+<div class="hero">
+  <span class="tag">INNOVATION • FORMATION • CRÉATION</span>
+
+  <h1>DONNE VIE À TES<br>
+  <span>PROJETS DIGITAUX.</span></h1>
+
+  <p>
+    Bienvenue chez EDK DIGITAL STUDIO.
+    Nous t'accompagnons dans ton apprentissage
+    numérique et dans la création de ton identité
+    sur Internet.
+  </p>
+
+  <div class="buttons">
+    <a href="#services" class="btn primary">Découvrir nos services</a>
+    <a href="https://wa.me/243838379752" class="btn secondary">Nous contacter</a>
+  </div>
+</div>
+
+<section id="services">
+  <div class="section-title">
+    <h2>Nos services</h2>
+    <p>Des solutions numériques pour donner de la valeur à tes idées.</p>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <div class="symbol">🎓</div>
+      <h3>Formations numériques</h3>
+      <p>
+        Apprends les bases de l'informatique,
+        du développement web et des nouvelles
+        technologies grâce à nos formations.
+      </p>
+      <a href="#formations">En savoir plus →</a>
+    </div>
+
+    <div class="card">
+      <div class="symbol">💻</div>
+      <h3>Création de sites web</h3>
+      <p>
+        Nous créons des sites web modernes,
+        professionnels et adaptés à tes besoins :
+        business, portfolio, entreprise ou projet.
+      </p>
+      <span class="price">25$</span><br>
+      <a onclick="openOrder()">Commander un site →</a>
+    </div>
+
+    <div class="card">
+      <div class="symbol">📄</div>
+      <h3>Page de garde</h3>
+      <p>
+        Une page de garde propre et professionnelle
+        pour ton TP, en travail personnel ou en groupe.
+      </p>
+      <span class="price">1$</span><br>
+      <a onclick="openCover()">Commander ma page de garde →</a>
+    </div>
+
+    <div class="card">
+      <div class="symbol">🚀</div>
+      <h3>Projets digitaux</h3>
+      <p>
+        Transforme tes idées en projets concrets.
+        Nous t'accompagnons dans la réalisation
+        de tes ambitions numériques.
+      </p>
+      <a href="https://wa.me/243838379752">Parlons de ton projet →</a>
+    </div>
+  </div>
+</section>
+
+<section id="formations">
+  <div class="section-title">
+    <h2>Développe tes compétences</h2>
+    <p>Le numérique est une opportunité. Apprends à l'exploiter.</p>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <div class="symbol">🌐</div>
+      <h3>Initiation au web</h3>
+      <p>Découvre le fonctionnement des sites internet et les bases du HTML et CSS.</p>
+      <span class="price">20$</span><br>
+      <a onclick="openForm('Initiation au web')">S'inscrire →</a>
+    </div>
+
+    <div class="card">
+      <div class="symbol">⚙️</div>
+      <h3>Développement web</h3>
+      <p>Apprends à concevoir et personnaliser tes propres projets web.</p>
+      <span class="price">20$</span><br>
+      <a onclick="openForm('Développement web')">S'inscrire →</a>
+    </div>
+
+    <div class="card">
+      <div class="symbol">🎨</div>
+      <h3>Design numérique</h3>
+      <p>Découvre les principes du design et de la présentation visuelle.</p>
+      <a onclick="openForm('Design numérique')">S'inscrire →</a>
+    </div>
+  </div>
+</section>
+
+<section class="about">
+  <div class="section-title">
+    <h2>À propos de nous</h2>
+  </div>
+
+  <p>
+    EDK DIGITAL STUDIO est un espace dédié à la
+    formation numérique et à la création de solutions
+    web. Notre ambition est de rendre la technologie
+    plus accessible et d'aider chacun à concrétiser
+    ses idées grâce au numérique.
+    <br><br>
+    <strong>Apprendre. Créer. Innover.</strong>
+  </p>
+</section>
+
+<section class="contact">
+  <div class="section-title">
+    <h2>Un projet en tête ?</h2>
+    <p>Tu souhaites apprendre ou faire créer ton propre site web ?<br>
+    Contacte-nous et parlons de ton projet.</p>
+  </div>
+
+  <a href="https://wa.me/243838379752" class="btn primary">
+    Discuter sur WhatsApp
+  </a>
+</section>
+
+<footer>
+  © 2026 EDK DIGITAL STUDIO — Tous droits réservés.
+  <br><br>
+  Une création numérique signée EDK.
+</footer>
+
+<!-- FORMULAIRE D'INSCRIPTION -->
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <button class="modal-close" type="button" onclick="closeForm()">×</button>
+    <h3>Inscription à la formation</h3>
+    <p class="sub">Remplis le formulaire, puis confirme : tu seras redirigé vers WhatsApp pour finaliser ton inscription.</p>
+
+    <div class="field">
+      <label for="f-name">Nom complet *</label>
+      <input type="text" id="f-name" placeholder="Ex : Jean Mukendi">
+    </div>
+
+    <div class="field">
+      <label for="f-phone">Numéro WhatsApp *</label>
+      <input type="tel" id="f-phone" placeholder="Ex : +243 8X XXX XXXX">
+    </div>
+
+    <div class="field">
+      <label for="f-email">Email (facultatif)</label>
+      <input type="email" id="f-email" placeholder="exemple@mail.com">
+    </div>
+
+    <div class="field">
+      <label for="f-course">Formation choisie</label>
+      <select id="f-course" onchange="updatePrice()">
+        <option>Initiation au web</option>
+        <option>Développement web</option>
+        <option>Design numérique</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="f-level">Ton niveau</label>
+      <select id="f-level">
+        <option>Débutant complet</option>
+        <option>Je connais un peu</option>
+        <option>Intermédiaire</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="f-msg">Message (facultatif)</label>
+      <textarea id="f-msg" placeholder="Une question, un souhait ?"></textarea>
+    </div>
+
+    <div class="total"><span>Prix de la formation</span><span id="f-price">20$</span></div>
+
+    <button class="submit" type="button" onclick="sendToWhatsApp()">Confirmer et envoyer sur WhatsApp</button>
+    <p class="note">Tu seras redirigé vers WhatsApp.</p>
+  </div>
+</div>
+
+<!-- FORMULAIRE DE COMMANDE DE SITE -->
+<div class="modal" id="modal-site">
+  <div class="modal-box">
+    <button class="modal-close" type="button" onclick="closeOrder()">×</button>
+    <h3>Commander ton site web</h3>
+    <p class="sub">Dis-nous ce que tu veux, puis confirme : tu seras redirigé vers WhatsApp pour lancer ton projet.</p>
+
+    <div class="field">
+      <label for="s-name">Nom complet *</label>
+      <input type="text" id="s-name" placeholder="Ex : Jean Mukendi">
+    </div>
+
+    <div class="field">
+      <label for="s-phone">Numéro WhatsApp *</label>
+      <input type="tel" id="s-phone" placeholder="Ex : +243 8X XXX XXXX">
+    </div>
+
+    <div class="field">
+      <label for="s-email">Email (facultatif)</label>
+      <input type="email" id="s-email" placeholder="exemple@mail.com">
+    </div>
+
+    <div class="field">
+      <label for="s-type">Type de site</label>
+      <select id="s-type">
+        <option>Site business</option>
+        <option>Portfolio</option>
+        <option>Site d'entreprise</option>
+        <option>Autre projet</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="s-desc">Décris ton projet *</label>
+      <textarea id="s-desc" placeholder="Nom de ton activité, ce que tu veux sur le site, couleurs préférées..."></textarea>
+    </div>
+
+    <div class="total"><span>Prix du site</span><span id="s-price"></span></div>
+
+    <button class="submit" type="button" onclick="sendOrder()">Confirmer et envoyer sur WhatsApp</button>
+    <p class="note">Tu seras redirigé vers WhatsApp.</p>
+  </div>
+</div>
+
+<!-- FORMULAIRE PAGE DE GARDE -->
+<div class="modal" id="modal-cover">
+  <div class="modal-box">
+    <button class="modal-close" type="button" onclick="closeCover()">×</button>
+    <h3>Commander ta page de garde</h3>
+    <p class="sub">Remplis les informations de ton TP, puis confirme : tu seras redirigé vers WhatsApp.</p>
+
+    <div class="field">
+      <label for="c-course">TP de (nom du cours) *</label>
+      <input type="text" id="c-course" placeholder="Ex : Informatique de gestion">
+    </div>
+
+    <div class="field">
+      <label for="c-mode">Type de travail</label>
+      <select id="c-mode" onchange="updateCoverMode()">
+        <option value="personnel">Personnel</option>
+        <option value="groupe">En groupe</option>
+      </select>
+    </div>
+
+    <div class="field" id="c-solo-box">
+      <label for="c-name">Ton nom *</label>
+      <input type="text" id="c-name" placeholder="Ex : Jean Mukendi">
+    </div>
+
+    <div id="c-group-box" style="display:none;">
+      <div class="field">
+        <label for="c-count">Nombre de personnes dans le groupe (max 10) *</label>
+        <select id="c-count">
+          <option>2</option><option>3</option><option>4</option><option>5</option>
+          <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="c-members">Noms des membres du groupe *</label>
+        <textarea id="c-members" placeholder="Un nom par ligne"></textarea>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="c-prof">Nom du professeur *</label>
+      <input type="text" id="c-prof" placeholder="Ex : Prof. Kalala">
+    </div>
+
+    <div class="field">
+      <label for="c-school">Nom de l'école ou de l'université *</label>
+      <input type="text" id="c-school" placeholder="Ex : Université de Kinshasa">
+    </div>
+
+    <div class="total"><span>Prix de la page de garde</span><span id="c-price"></span></div>
+
+    <button class="submit" type="button" onclick="sendCover()">Confirmer et envoyer sur WhatsApp</button>
+    <p class="note">Tu seras redirigé vers WhatsApp.</p>
+  </div>
+</div>
+
+<script>
+/* ====== À MODIFIER ====== */
+var WHATSAPP_NUMBER = "243838379752"; // ton numéro, sans le + ni espaces
+var PRICES = {
+  "Initiation au web": "20$",
+  "Développement web": "20$",
+  "Design numérique": "Prix à confirmer"
+};
+/* ======================== */
+
+function toggleMenu() {
+  document.getElementById("dropdown").classList.toggle("show");
+}
+
+window.onclick = function(event) {
+  if (!event.target.matches('.menu-btn')) {
+    document.getElementById("dropdown").classList.remove("show");
+  }
+  if (event.target.id === "modal") closeForm();
+  if (event.target.id === "modal-site") closeOrder();
+  if (event.target.id === "modal-cover") closeCover();
+};
+
+var COVER_PRICE = "1$"; // prix de la page de garde
+
+function openCover() {
+  document.getElementById("c-price").textContent = COVER_PRICE;
+  updateCoverMode();
+  document.getElementById("modal-cover").classList.add("open");
+}
+
+function closeCover() {
+  document.getElementById("modal-cover").classList.remove("open");
+}
+
+function updateCoverMode() {
+  var group = document.getElementById("c-mode").value === "groupe";
+  document.getElementById("c-group-box").style.display = group ? "block" : "none";
+  document.getElementById("c-solo-box").style.display = group ? "none" : "block";
+}
+
+function sendCover() {
+  var course = document.getElementById("c-course").value.trim();
+  var mode = document.getElementById("c-mode").value;
+  var prof = document.getElementById("c-prof").value.trim();
+  var school = document.getElementById("c-school").value.trim();
+  var who;
+
+  if (mode === "groupe") {
+    var count = document.getElementById("c-count").value;
+    var members = document.getElementById("c-members").value.trim();
+    if (!members) {
+      alert("Merci d'indiquer les noms des membres du groupe.");
+      return;
+    }
+    who = "👥 Travail : En groupe (" + count + " personnes)\n" +
+          "📝 Membres :\n" + members + "\n";
+  } else {
+    var name = document.getElementById("c-name").value.trim();
+    if (!name) {
+      alert("Merci d'indiquer ton nom.");
+      return;
+    }
+    who = "👤 Travail : Personnel\n" +
+          "📝 Nom : " + name + "\n";
+  }
+
+  if (!course || !prof || !school) {
+    alert("Merci de remplir le nom du cours, du professeur et de l'école ou université.");
+    return;
+  }
+
+  var text =
+    "Bonjour EDK DIGITAL STUDIO 👋\n" +
+    "Je souhaite commander une page de garde.\n\n" +
+    "📄 TP de : " + course + "\n" +
+    who +
+    "👨‍🏫 Professeur : " + prof + "\n" +
+    "🏫 École / Université : " + school + "\n" +
+    "💰 Prix : " + COVER_PRICE + "\n" +
+    "\nMerci de me confirmer ma commande.";
+
+  window.open("https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(text), "_blank");
+  closeCover();
+}
+
+var SITE_PRICE = "25$"; // prix de la création de site
+
+function openOrder() {
+  document.getElementById("s-price").textContent = SITE_PRICE;
+  document.getElementById("modal-site").classList.add("open");
+}
+
+function closeOrder() {
+  document.getElementById("modal-site").classList.remove("open");
+}
+
+function sendOrder() {
+  var name = document.getElementById("s-name").value.trim();
+  var phone = document.getElementById("s-phone").value.trim();
+  var email = document.getElementById("s-email").value.trim();
+  var type = document.getElementById("s-type").value;
+  var desc = document.getElementById("s-desc").value.trim();
+
+  if (!name || !phone || !desc) {
+    alert("Merci de remplir ton nom, ton numéro WhatsApp et la description de ton projet.");
+    return;
+  }
+
+  var text =
+    "Bonjour EDK DIGITAL STUDIO 👋\n" +
+    "Je souhaite commander un site web.\n\n" +
+    "💻 Type de site : " + type + "\n" +
+    "💰 Prix : " + SITE_PRICE + "\n" +
+    "👤 Nom : " + name + "\n" +
+    "📱 WhatsApp : " + phone + "\n" +
+    (email ? "📧 Email : " + email + "\n" : "") +
+    "📝 Projet : " + desc + "\n" +
+    "\nMerci de me confirmer ma commande.";
+
+  window.open("https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(text), "_blank");
+  closeOrder();
+}
+
+function openForm(course) {
+  document.getElementById("f-course").value = course;
+  updatePrice();
+  document.getElementById("modal").classList.add("open");
+}
+
+function closeForm() {
+  document.getElementById("modal").classList.remove("open");
+}
+
+function updatePrice() {
+  var course = document.getElementById("f-course").value;
+  document.getElementById("f-price").textContent = PRICES[course] || "";
+}
+
+function sendToWhatsApp() {
+  var name = document.getElementById("f-name").value.trim();
+  var phone = document.getElementById("f-phone").value.trim();
+  var email = document.getElementById("f-email").value.trim();
+  var course = document.getElementById("f-course").value;
+  var level = document.getElementById("f-level").value;
+  var msg = document.getElementById("f-msg").value.trim();
+
+  if (!name || !phone) {
+    alert("Merci de remplir ton nom et ton numéro WhatsApp.");
+    return;
+  }
+
+  var text =
+    "Bonjour EDK DIGITAL STUDIO 👋\n" +
+    "Je souhaite m'inscrire à une formation.\n\n" +
+    "📚 Formation : " + course + "\n" +
+    "💰 Prix : " + (PRICES[course] || "") + "\n" +
+    "👤 Nom : " + name + "\n" +
+    "📱 WhatsApp : " + phone + "\n" +
+    (email ? "📧 Email : " + email + "\n" : "") +
+    "🎯 Niveau : " + level + "\n" +
+    (msg ? "💬 Message : " + msg + "\n" : "") +
+    "\nMerci de me confirmer mon inscription.";
+
+  window.open("https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(text), "_blank");
+  closeForm();
+}
+</script>
+
+</body>
+</html>
